@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<a role="button" href="/manage-survey/create" class="btn btn-primary">Create New Survey</a>
-
+    <div class="container">
+    <div class="row justify-content-center ">
+<a role="button" href="/manage-survey/create" class="btn btn-primary">Create New Poll</a>
+    </div>
 @if (count($surveys) > 0)
     <table class="table">
     <thead class="thead-dark">
@@ -32,8 +34,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card" style="color: black; text-align:center;">
-                        <h2>No surveys has been created yet.</h2>
+                        <h2 style="text-align: center;">No Polls has been created yet.</h2>
                 </div>
             </div>
         </div>

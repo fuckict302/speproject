@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/', [App\Http\Controllers\SurveyController::class, 'ListSurvey'])->name('ListSurvey');
+
 Route::get('/test', function () {
     return view('test');
 });

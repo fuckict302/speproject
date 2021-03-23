@@ -48,7 +48,7 @@
                         @else
                             <a class="nav-link" href="/home">Home</a>
                             <a class="nav-link" href="/spe">SPE</a>
-                            <a class="nav-link" href="/feedback">Feedback</a>
+                            <a class="nav-link" href="/contact">Feedback</a>
                         @endif
                         <a class="nav-link" href="{{ route('logout') }}"
                            onclick="event.preventDefault();

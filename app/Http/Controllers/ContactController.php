@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Mail;
-
 use App\Mail\ContactFormMail;
 
 class ContactController extends Controller
@@ -33,6 +32,13 @@ class ContactController extends Controller
             'message' => $request['message'],
         ];
 
+        Contact::create([
+            'name' => $request['fullname'],
+            'email' => $request['email'],
+            'phone_number' => $request['phone_number'],
+            'subject' => $request['subject'],
+            'message' => $request['message'],
+        ]);
 
         Mail::to('receipent@domain.com')->send(new ContactFormMail($contact));
 

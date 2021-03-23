@@ -144,6 +144,13 @@ class SurveyController extends Controller
                 "surveys"=>$surveys
             ]);
         }
-    }
 
+
+    }
+    public function ListSurvey(){
+            $surveys = Survey::all();
+            return view('welcome', [
+                "surveys"=>$surveys
+            ]);
+        }
 }
