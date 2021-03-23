@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use MattDaneshvar\Survey\Models\Survey;
 use MattDaneshvar\Survey\Models\Question;
 use MattDaneshvar\Survey\Models\Entry;
+use MattDaneshvar\Survey\Models\Answer;
 
 class SurveyController extends Controller
 {
@@ -29,8 +31,63 @@ class SurveyController extends Controller
             ]);
     }
 
+    public function viewSurveyResult($id){
+        $survey = Survey::where('id', '=', $id)->firstOrFail();
+        $survey_name = $survey->name;
+        $questions = Question::where('survey_id', '=', $id)->get();
+
+        // Create hash maps for iteration in views
+        $counter = 1;
+        $survey_questions = array();
+        $survey_choices = array();
+        $survey_responses = array();
+        foreach($questions as $question){
+            $survey_questions['q' . $counter] = $question->content;
+            $options = $question->options;
+            $survey_choices['q' . $counter] = $options;
+            $response = array();
+            foreach($options as $option){
+                $matchThese = ['question_id' => $question->id, 'value' => $option];
+                $response[$option] = count(Answer::where($matchThese)->get());
+            }
+            $survey_responses['q' . $counter] = $response;
+            $counter++;
+        }
+        return view('surveyResult', [
+            "survey_name"=>$survey_name,
+            "survey_questions"=>$survey_questions,
+            "survey_choices"=>$survey_choices,
+            "survey_responses"=>$survey_responses
+        ]);
+    }
+
     public function viewCreateSurvey(){
-        return view('surveyCreate');
+        $user = Auth::user();
+        if ($user == null)
+            {return view('unauthorizeduser');}
+        else
+            {return view('surveyCreate');}
+    }
+
+    public function deleteSurvey($id){
+        $survey = Survey::where('id', '=', $id)->firstOrFail();
+        $survey_name = $survey->name;
+
+        $questions = Question::where('survey_id', '=', $id)->get();
+
+        foreach($questions as $question){
+            $delete_answers = Answer::where('question_id', '=', $question->id)->delete();
+        }
+
+        $delete_questions = Question::where('survey_id', '=', $id)->delete();
+        $delete_entries = Entry::where('survey_id', '=', $id)->delete();
+        $delete_survey = Survey::destroy($id);
+
+
+        return view('survey_deleted', [
+            "survey_name"=>$survey_name,
+            "survey_id"=>$id
+        ]);
     }
 
     public function doSurvey(Request $request, $survey_id){
@@ -77,38 +134,16 @@ class SurveyController extends Controller
         ]);
     }
 
-    public function store(Survey $survey, Request $request)
-    {
-        $answers = $this->validate($request, $survey);
-
-        (new Entry)->for($survey)->fromArray($answers)->push();
-    }
-
-    public function createSurvey2(){
-        $survey = Survey::create([
-            'name' => 'Dog Population Survey',
-            'settings' => [
-                'accept-guest-entries' => true
-            ]
-        ]);
-
-        $survey->questions()->create([
-            'content' => 'How many cats do you have?',
-            'type' => 'number',
-            'rules' => ['numeric', 'min:0']
-        ]);
-
-        $survey->questions()->create([
-            'content' => 'What\'s the name of your first cat',
-        ]);
-
-        $survey->questions()->create([
-            'content' => 'Would you want a new cat?',
-            'type' => 'radio',
-            'options' => ['Yes', 'Oui']
-        ]);
-        $survey_id = $survey->getKey();
-        return view('surveyCreate', ["survey_id"=>$survey_id]);
+    public function manageSurvey(){
+        $user = Auth::user();
+        if ($user == null){
+            return view('unauthorizeduser');
+        } else{
+            $surveys = Survey::all();
+            return view('manageSurvey', [
+                "surveys"=>$surveys
+            ]);
+        }
     }
 
 }

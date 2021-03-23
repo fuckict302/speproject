@@ -54,8 +54,13 @@ Route::get('/declaration', function () {
 });
 
 // Survey routes
-Route::get('/manage-survey/create', [App\Http\Controllers\SurveyController::class, 'viewCreateSurvey'])->name('viewCreateSurvey');
+Route::get('/manage-survey', [App\Http\Controllers\SurveyController::class, 'manageSurvey'])->name('manageSurvey');
 
+Route::get('/manage-survey/result/{id}', [App\Http\Controllers\SurveyController::class, 'viewSurveyResult'])->name('viewSurveyResult');
+
+Route::get('/manage-survey/delete/{id}', [App\Http\Controllers\SurveyController::class, 'deleteSurvey'])->name('deleteSurvey');
+
+Route::get('/manage-survey/create', [App\Http\Controllers\SurveyController::class, 'viewCreateSurvey'])->name('viewCreateSurvey');
 Route::post('/manage-survey/create', [App\Http\Controllers\SurveyController::class, 'createSurvey'])->name('createSurvey');
 
 Route::get('/survey', [App\Http\Controllers\SurveyController::class, 'index'])->name('survey');

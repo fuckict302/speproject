@@ -44,6 +44,7 @@
                             <a class="nav-link" href="/home">Home</a>
                             <a class="nav-link" href="/managespe">SPE</a>
                             <a class="nav-link" href="/managestudents">Students</a>
+                            <a class="nav-link" href="/manage-survey">Polls</a>
                         @else
                             <a class="nav-link" href="/home">Home</a>
                             <a class="nav-link" href="/spe">SPE</a>
